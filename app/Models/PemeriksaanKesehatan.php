@@ -13,6 +13,8 @@ class PemeriksaanKesehatan extends Model
     /** @use HasFactory<PemeriksaanKesehatanFactory> */
     use HasFactory;
 
+    protected $table = 'pemeriksaan_kesehatan';
+
     protected $primaryKey = 'pemeriksaan_id';
 
     protected function casts(): array
