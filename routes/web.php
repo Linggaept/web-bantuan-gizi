@@ -7,6 +7,9 @@ use App\Livewire\Admin\LansiaForm;
 use App\Livewire\Admin\LansiaTable;
 use App\Livewire\Admin\LaporanTable;
 use App\Livewire\Admin\MonitoringTable;
+use App\Livewire\Lurah\ApprovalTable as LurahApproval;
+use App\Livewire\Lurah\Dashboard as LurahDashboard;
+use App\Livewire\Lurah\LaporanTable as LurahLaporan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -23,4 +26,11 @@ Route::prefix('dashboard')->middleware(['auth', 'web.role:admin'])->group(functi
     Route::get('/laporan', LaporanTable::class)->name('dashboard.laporan');
     Route::get('/laporan/print', [AdminAuthController::class, 'laporanPrint'])->name('dashboard.laporan.print');
     Route::get('/monitoring', MonitoringTable::class)->name('dashboard.monitoring');
+});
+
+Route::prefix('lurah')->middleware(['auth', 'web.role:lurah'])->group(function () {
+    Route::get('/', LurahDashboard::class)->name('lurah.dashboard');
+    Route::get('/approval', LurahApproval::class)->name('lurah.approval');
+    Route::get('/laporan', LurahLaporan::class)->name('lurah.laporan');
+    Route::get('/laporan/print', [AdminAuthController::class, 'laporanPrint'])->name('lurah.laporan.print');
 });

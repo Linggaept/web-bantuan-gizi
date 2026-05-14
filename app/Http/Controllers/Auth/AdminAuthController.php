@@ -29,7 +29,12 @@ class AdminAuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        $role = Auth::user()->role;
+
+        return redirect()->intended(match ($role) {
+            'lurah' => route('lurah.dashboard'),
+            default => route('dashboard'),
+        });
     }
 
     public function logout(Request $request): RedirectResponse
