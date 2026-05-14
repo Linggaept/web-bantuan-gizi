@@ -7,13 +7,13 @@ uses(RefreshDatabase::class);
 
 test('user can login with valid credentials', function () {
     $user = User::factory()->create([
-        'username' => 'testoperator',
+        'email' => 'testoperator@example.com',
         'password' => bcrypt('password123'),
         'is_active' => true,
     ]);
 
     $response = $this->postJson('/api/v1/auth/login', [
-        'username' => 'testoperator',
+        'email' => 'testoperator@example.com',
         'password' => 'password123',
     ]);
 
@@ -24,29 +24,29 @@ test('user can login with valid credentials', function () {
 });
 
 test('login fails with wrong password', function () {
-    User::factory()->create(['username' => 'testop2', 'password' => bcrypt('secret')]);
+    User::factory()->create(['email' => 'testop2@example.com', 'password' => bcrypt('secret')]);
 
     $this->postJson('/api/v1/auth/login', [
-        'username' => 'testop2',
+        'email' => 'testop2@example.com',
         'password' => 'wrong',
     ])->assertUnprocessable();
 });
 
 test('login fails for inactive user', function () {
     User::factory()->create([
-        'username' => 'inactive',
+        'email' => 'inactive@example.com',
         'password' => bcrypt('password'),
         'is_active' => false,
     ]);
 
     $this->postJson('/api/v1/auth/login', [
-        'username' => 'inactive',
+        'email' => 'inactive@example.com',
         'password' => 'password',
     ])->assertUnprocessable();
 });
 
 test('authenticated user can logout', function () {
-    $user = User::factory()->create(['username' => 'testlogout']);
+    $user = User::factory()->create(['email' => 'testlogout@example.com']);
 
     $token = $user->createToken('test')->plainTextToken;
 

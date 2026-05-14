@@ -16,7 +16,7 @@ class LansiaForm extends Component
 {
     use WithFileUploads;
 
-    public ?int $id = null;
+    public ?string $id = null;
 
     public ?Lansia $lansia = null;
 
