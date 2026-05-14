@@ -13,6 +13,8 @@ class Pendataan extends Model
     /** @use HasFactory<PendataanFactory> */
     use HasFactory;
 
+    protected $table = 'pendataan';
+
     protected $primaryKey = 'pendataan_id';
 
     protected function casts(): array
