@@ -46,14 +46,14 @@ Route::prefix('v1')->group(function () {
         // Lurah only
         Route::middleware('role:lurah')->group(function () {
             Route::post('bantuan/{bantuan}/approve', [BantuanController::class, 'approve']);
+        });
+
+        // Lurah + Operator + Admin: read lansia
+        Route::middleware('role:lurah,operator,admin')->group(function () {
             Route::get('lansia', [LansiaController::class, 'index']);
             Route::get('lansia/{lansia}', [LansiaController::class, 'show']);
             Route::get('lansia/{lansia}/status-bantuan', [LansiaController::class, 'statusBantuan']);
         });
 
-        // Operator + Admin: status bantuan per lansia
-        Route::middleware('role:operator,admin')->group(function () {
-            Route::get('lansia/{lansia}/status-bantuan', [LansiaController::class, 'statusBantuan']);
-        });
     });
 });

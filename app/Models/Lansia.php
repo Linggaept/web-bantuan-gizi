@@ -14,6 +14,8 @@ class Lansia extends Model
     /** @use HasFactory<LansiaFactory> */
     use HasFactory, SoftDeletes;
 
+    protected $table = 'lansia';
+
     protected $primaryKey = 'lansia_id';
 
     protected function casts(): array

@@ -13,6 +13,8 @@ class BantuanGizi extends Model
     /** @use HasFactory<BantuanGiziFactory> */
     use HasFactory;
 
+    protected $table = 'bantuan_gizi';
+
     protected $primaryKey = 'bantuan_id';
 
     protected function casts(): array
