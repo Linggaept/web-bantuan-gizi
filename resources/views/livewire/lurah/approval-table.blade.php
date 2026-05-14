@@ -20,11 +20,16 @@
                 <input wire:model.live="periodeTahun" type="number" min="2020" class="w-24 border border-gray-300 rounded px-3 py-2 text-sm">
 
                 @if($hasPending)
-                <button wire:click="approveAll" wire:confirm="Setujui semua penerima periode ini?" class="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700 flex items-center gap-1">
-                    ✓ Approve Semua Penerima
+                <button wire:click="approveAll" wire:confirm="Setujui semua penerima periode ini?" wire:loading.attr="disabled" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-all duration-150 disabled:opacity-60">
+                    <svg wire:loading.remove wire:target="approveAll" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <svg wire:loading wire:target="approveAll" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                    Approve Semua
                 </button>
                 @else
-                <span class="text-sm text-green-600 font-medium bg-green-50 px-3 py-2 rounded border border-green-200">✓ Semua sudah diapprove</span>
+                <span class="inline-flex items-center gap-1.5 text-sm text-green-700 font-medium bg-green-50 px-3 py-2 rounded-lg border border-green-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Semua sudah disetujui
+                </span>
                 @endif
             </div>
         </div>
@@ -65,11 +70,16 @@
                         </td>
                         <td class="px-4 py-3">
                             @if($bantuan->status_penerima === 'penerima' && !$bantuan->approved_at)
-                            <button wire:click="approve({{ $bantuan->bantuan_id }})" class="text-green-600 hover:text-green-800 text-xs font-medium">
-                                Approve
+                            <button wire:click="approve({{ $bantuan->bantuan_id }})" wire:loading.attr="disabled" wire:target="approve({{ $bantuan->bantuan_id }})" class="inline-flex items-center gap-1.5 bg-green-50 hover:bg-green-100 active:bg-green-200 text-green-700 border border-green-300 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-150 disabled:opacity-60">
+                                <svg wire:loading.remove wire:target="approve({{ $bantuan->bantuan_id }})" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <svg wire:loading wire:target="approve({{ $bantuan->bantuan_id }})" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                                Setujui
                             </button>
                             @elseif($bantuan->approved_at)
-                            <span class="text-xs text-gray-400">{{ $bantuan->approver?->name }}</span>
+                            <span class="inline-flex items-center gap-1 text-xs text-gray-400">
+                                <svg class="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                {{ $bantuan->approver?->name ?? 'Disetujui' }}
+                            </span>
                             @endif
                         </td>
                     </tr>
