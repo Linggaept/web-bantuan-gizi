@@ -1,5 +1,5 @@
 <div class="max-w-lg mx-auto">
-    <div class="bg-white rounded-lg shadow-sm p-6">
+    <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6">
         <h2 class="text-lg font-semibold text-gray-800 mb-6">{{ $id ? 'Edit Data Lansia' : 'Tambah Data Lansia' }}</h2>
 
         <form wire:submit="simpan" class="space-y-4">

@@ -1,39 +1,40 @@
 <div>
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-3">
+    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+        <div class="flex flex-wrap items-center gap-3 flex-1">
             <input
                 wire:model.live.debounce.300ms="search"
                 type="text"
                 placeholder="Cari berdasarkan nama atau NIK..."
-                class="border border-gray-300 rounded px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="border border-gray-300 rounded px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-            <select wire:model.live="filterRw" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none">
+            <select wire:model.live="filterRw" class="border border-gray-300 rounded px-3 py-2 text-sm w-full sm:w-auto focus:outline-none">
                 <option value="">Semua RW</option>
                 @foreach($rwOptions as $rw)
                     <option value="{{ $rw }}">RW {{ $rw }}</option>
                 @endforeach
             </select>
-            <select wire:model.live="filterKondisi" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none">
+            <select wire:model.live="filterKondisi" class="border border-gray-300 rounded px-3 py-2 text-sm w-full sm:w-auto focus:outline-none">
                 <option value="">Semua Kondisi</option>
                 <option value="baik">Sehat</option>
                 <option value="sedang">Sakit Ringan</option>
                 <option value="buruk">Sakit</option>
             </select>
-            <select wire:model.live="filterStatus" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none">
+            <select wire:model.live="filterStatus" class="border border-gray-300 rounded px-3 py-2 text-sm w-full sm:w-auto focus:outline-none">
                 <option value="">Semua Status</option>
                 <option value="menunggu">Menunggu</option>
                 <option value="terverifikasi">Terverifikasi</option>
                 <option value="ditolak">Ditolak</option>
             </select>
         </div>
-        <a href="{{ route('dashboard.lansia.edit', 'new') }}" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 flex items-center gap-1">
+        <a href="{{ route('dashboard.lansia.edit', 'new') }}" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 flex items-center justify-center gap-1 w-full sm:w-auto mt-2 sm:mt-0">
             + Tambah Data
         </a>
     </div>
 
     {{-- Table --}}
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead class="bg-gray-50 border-b">
                 <tr>
@@ -107,6 +108,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
 
         <div class="px-4 py-3 border-t">
             {{ $lansiaList->links() }}

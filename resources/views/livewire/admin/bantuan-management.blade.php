@@ -1,5 +1,5 @@
 <div>
-    <div class="grid grid-cols-2 gap-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {{-- Kuota Form --}}
         <div class="bg-white rounded-lg shadow-sm p-6">
             <h3 class="font-medium text-gray-800 mb-4">Pengaturan Kuota Bantuan</h3>
@@ -50,6 +50,7 @@
         <div class="px-6 py-4 border-b">
             <h3 class="font-medium text-gray-800">Hasil Ranking Penerima Bantuan — {{ \Carbon\Carbon::create()->month($periodeBulan)->translatedFormat('F') }} {{ $periodeTahun }}</h3>
         </div>
+        <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead class="bg-gray-50 border-b">
                 <tr>
@@ -78,6 +79,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
     @endif
 </div>

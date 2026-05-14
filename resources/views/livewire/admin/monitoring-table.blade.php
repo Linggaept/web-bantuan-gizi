@@ -1,6 +1,6 @@
 <div>
     {{-- Stat Cards --}}
-    <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div class="bg-white rounded-lg shadow-sm p-4">
             <p class="text-sm text-gray-500">Input Hari Ini</p>
             <p class="text-3xl font-bold text-blue-600">{{ $totalInputHariIni }}</p>
@@ -15,12 +15,13 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {{-- Log Input Operator --}}
         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
             <div class="px-4 py-3 border-b">
                 <h3 class="font-medium text-gray-800 text-sm">Log Input Operator (20 Terbaru)</h3>
             </div>
+            <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-gray-50 border-b">
                     <tr>
@@ -47,6 +48,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
 
         {{-- Distribusi Bantuan per RW --}}
@@ -54,6 +56,7 @@
             <div class="px-4 py-3 border-b">
                 <h3 class="font-medium text-gray-800 text-sm">Distribusi Bantuan per RW</h3>
             </div>
+            <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-gray-50 border-b">
                     <tr>
@@ -76,6 +79,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </div>

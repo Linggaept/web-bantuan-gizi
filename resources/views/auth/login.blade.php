@@ -6,7 +6,7 @@
     <title>Login - Sistem Bantuan Gizi</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-gray-100 flex items-center justify-center">
+<body class="min-h-screen bg-gray-100 flex items-center justify-center px-4">
     <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-sm">
         <div class="flex items-center gap-2 mb-6">
             <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">

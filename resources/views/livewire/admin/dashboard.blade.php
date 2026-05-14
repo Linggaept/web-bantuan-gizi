@@ -1,6 +1,6 @@
 <div>
     {{-- Stat Cards --}}
-    <div class="grid grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="bg-white rounded-lg shadow-sm p-4 flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-500">Total Lansia</p>
@@ -48,9 +48,9 @@
     </div>
 
     {{-- Chart + Table Row --}}
-    <div class="grid grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {{-- Bar Chart --}}
-        <div class="col-span-3 bg-white rounded-lg shadow-sm p-4">
+        <div class="col-span-1 lg:col-span-3 bg-white rounded-lg shadow-sm p-4">
             <h3 class="text-sm font-medium text-gray-700 mb-4">Distribusi Usia Lansia</h3>
             <div
                 x-data="{}"
@@ -79,8 +79,9 @@
         </div>
 
         {{-- Latest Lansia Table --}}
-        <div class="col-span-2 bg-white rounded-lg shadow-sm p-4">
+        <div class="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-sm p-4">
             <h3 class="text-sm font-medium text-gray-700 mb-4">Data Lansia Terbaru</h3>
+            <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-left text-gray-500 border-b">
@@ -106,6 +107,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </div>
