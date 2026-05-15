@@ -60,6 +60,12 @@ class LansiaController extends Controller
 
         $lansia = Lansia::create($validated);
 
+        $lansia->pendataan()->create([
+            'user_id' => $request->user()->id,
+            'status_verifikasi' => 'menunggu',
+            'tanggal_input' => now(),
+        ]);
+
         return (new LansiaResource($lansia))
             ->response()
             ->setStatusCode(201);
