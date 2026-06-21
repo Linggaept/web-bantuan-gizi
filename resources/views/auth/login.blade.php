@@ -9,9 +9,6 @@
 <body class="min-h-screen bg-gray-100 flex items-center justify-center px-4">
     <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-sm">
         <div class="flex items-center gap-2 mb-6">
-            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-                <span class="text-white text-xs font-bold">L</span>
-            </div>
             <span class="font-semibold text-gray-800">Sistem Bantuan Gizi Lansia</span>
         </div>
 

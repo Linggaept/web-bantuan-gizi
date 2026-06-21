@@ -45,10 +45,11 @@
     </div>
 
     {{-- Hasil Ranking --}}
-    @if($hasilRanking->count() > 0)
+    @if($hasilRanking->count() > 0 || $search)
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b">
+        <div class="px-6 py-4 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <h3 class="font-medium text-gray-800">Hasil Ranking Penerima Bantuan — {{ \Carbon\Carbon::create()->month($periodeBulan)->translatedFormat('F') }} {{ $periodeTahun }}</h3>
+            <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari nama atau NIK..." class="border border-gray-300 rounded px-3 py-2 text-sm w-full sm:w-64 focus:outline-none focus:ring-1 focus:ring-blue-400">
         </div>
         <div class="overflow-x-auto">
         <table class="w-full text-sm">
@@ -63,7 +64,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($hasilRanking as $bantuan)
+                @forelse($hasilRanking as $bantuan)
                 <tr class="border-b last:border-0">
                     <td class="px-4 py-3 text-gray-500">{{ $loop->iteration }}</td>
                     <td class="px-4 py-3 font-medium">{{ $bantuan->lansia?->nama }}</td>
@@ -76,7 +77,11 @@
                         </span>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-sm">Tidak ada hasil cocok.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
         </div>

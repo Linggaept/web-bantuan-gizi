@@ -34,6 +34,30 @@
             </div>
         </div>
 
+        <div class="flex flex-wrap gap-2 mb-4">
+            <input wire:model.live="search" type="text" placeholder="Cari nama atau NIK..." class="border border-gray-300 rounded px-3 py-2 text-sm w-full sm:w-56 focus:outline-none focus:ring-1 focus:ring-blue-400">
+
+            <select wire:model.live="filterRw" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none">
+                <option value="">Semua RW</option>
+                @foreach($rwOptions as $rw)
+                    <option value="{{ $rw }}">RW {{ $rw }}</option>
+                @endforeach
+            </select>
+
+            <select wire:model.live="filterStatus" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none">
+                <option value="">Semua Status</option>
+                <option value="penerima">Penerima</option>
+                <option value="tidak_penerima">Tidak Penerima</option>
+                <option value="ditolak">Ditolak</option>
+            </select>
+
+            <select wire:model.live="filterApproval" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none">
+                <option value="">Semua Approval</option>
+                <option value="approved">Sudah Disetujui</option>
+                <option value="pending">Belum Disetujui</option>
+            </select>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-gray-50 border-b border-t">
@@ -57,12 +81,16 @@
                         <td class="px-4 py-3 text-gray-600">{{ $bantuan->lansia?->rw }}</td>
                         <td class="px-4 py-3 font-mono text-xs text-blue-600">{{ $bantuan->skor_ranking ? number_format($bantuan->skor_ranking, 4) : '-' }}</td>
                         <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded-full text-xs {{ $bantuan->status_penerima === 'penerima' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
-                                {{ $bantuan->status_penerima === 'penerima' ? 'Penerima' : 'Tidak Penerima' }}
-                            </span>
+                            @if($bantuan->status_penerima === 'penerima')
+                                <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Penerima</span>
+                            @else
+                                <span class="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-600">Tidak Penerima</span>
+                            @endif
                         </td>
                         <td class="px-4 py-3">
-                            @if($bantuan->approved_at)
+                            @if($bantuan->status_penerima === 'ditolak')
+                                <span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">Ditolak</span>
+                            @elseif($bantuan->approved_at)
                                 <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700">✓ Approved</span>
                             @else
                                 <span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">Pending</span>
@@ -70,11 +98,18 @@
                         </td>
                         <td class="px-4 py-3">
                             @if($bantuan->status_penerima === 'penerima' && !$bantuan->approved_at)
-                            <button wire:click="approve({{ $bantuan->bantuan_id }})" wire:loading.attr="disabled" wire:target="approve({{ $bantuan->bantuan_id }})" class="inline-flex items-center gap-1.5 bg-green-50 hover:bg-green-100 active:bg-green-200 text-green-700 border border-green-300 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-150 disabled:opacity-60">
-                                <svg wire:loading.remove wire:target="approve({{ $bantuan->bantuan_id }})" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                <svg wire:loading wire:target="approve({{ $bantuan->bantuan_id }})" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
-                                Setujui
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button wire:click="approve({{ $bantuan->bantuan_id }})" wire:loading.attr="disabled" wire:target="approve({{ $bantuan->bantuan_id }})" class="inline-flex items-center gap-1.5 bg-green-50 hover:bg-green-100 active:bg-green-200 text-green-700 border border-green-300 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-150 disabled:opacity-60">
+                                    <svg wire:loading.remove wire:target="approve({{ $bantuan->bantuan_id }})" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <svg wire:loading wire:target="approve({{ $bantuan->bantuan_id }})" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                                    Setujui
+                                </button>
+                                <button wire:click="tolak({{ $bantuan->bantuan_id }})" wire:confirm="Tolak bantuan untuk {{ $bantuan->lansia?->nama }}?" wire:loading.attr="disabled" wire:target="tolak({{ $bantuan->bantuan_id }})" class="inline-flex items-center gap-1 bg-red-50 hover:bg-red-100 active:bg-red-200 text-red-600 border border-red-300 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-all duration-150 disabled:opacity-60">
+                                    <svg wire:loading.remove wire:target="tolak({{ $bantuan->bantuan_id }})" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    <svg wire:loading wire:target="tolak({{ $bantuan->bantuan_id }})" class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                                    Tolak
+                                </button>
+                            </div>
                             @elseif($bantuan->approved_at)
                             <span class="inline-flex items-center gap-1 text-xs text-gray-400">
                                 <svg class="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>

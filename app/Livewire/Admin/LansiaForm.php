@@ -46,6 +46,8 @@ class LansiaForm extends Component
 
     public $foto_ktp = null;
 
+    private string $originalKondisiKesehatan = '';
+
     public function mount(string $id): void
     {
         if ($id !== 'new') {
@@ -61,6 +63,7 @@ class LansiaForm extends Component
 
             $latestPeriksa = $this->lansia->pemeriksaan()->latest('tanggal_periksa')->first();
             $this->kondisi_kesehatan = $latestPeriksa?->hasil_periksa ?? '';
+            $this->originalKondisiKesehatan = $this->kondisi_kesehatan;
         }
     }
 
@@ -78,12 +81,21 @@ class LansiaForm extends Component
             'rt' => $this->rt ?: null,
         ];
 
-        if ($this->id) {
+        if (is_numeric($this->id)) {
+            $this->lansia ??= Lansia::findOrFail($this->id);
             $this->lansia->update($data);
             $lansia = $this->lansia;
         } else {
             $data['created_by'] = auth()->id();
             $lansia = Lansia::create($data);
+
+            $lansia->pendataan()->create([
+                'user_id' => auth()->id(),
+                'status_verifikasi' => 'terverifikasi',
+                'verified_by' => auth()->id(),
+                'verified_at' => now(),
+                'tanggal_input' => now()->toDateString(),
+            ]);
         }
 
         if ($this->foto_ktp) {
@@ -91,7 +103,7 @@ class LansiaForm extends Component
             $lansia->update(['foto_ktp' => $path]);
         }
 
-        if ($this->kondisi_kesehatan) {
+        if ($this->kondisi_kesehatan && $this->kondisi_kesehatan !== $this->originalKondisiKesehatan) {
             PemeriksaanKesehatan::create([
                 'lansia_id' => $lansia->lansia_id,
                 'tanggal_periksa' => now()->toDateString(),

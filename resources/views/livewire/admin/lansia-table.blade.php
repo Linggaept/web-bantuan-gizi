@@ -27,9 +27,6 @@
                 <option value="ditolak">Ditolak</option>
             </select>
         </div>
-        <a href="{{ route('dashboard.lansia.edit', 'new') }}" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 flex items-center justify-center gap-1 w-full sm:w-auto mt-2 sm:mt-0">
-            + Tambah Data
-        </a>
     </div>
 
     {{-- Table --}}
@@ -81,10 +78,9 @@
                     </td>
                     <td class="px-4 py-3">
                         <div class="flex items-center gap-2" x-data="{ confirmDelete: false }">
-                            <a href="{{ route('dashboard.lansia.edit', $lansia->lansia_id) }}" class="text-blue-500 hover:text-blue-700 text-xs">Edit</a>
-
                             @if($pendataan && $statusVerif === 'menunggu')
                             <button wire:click="verifikasiLansia({{ $pendataan->pendataan_id }}, 'terverifikasi')" class="text-green-500 hover:text-green-700 text-xs">Verifikasi</button>
+                            <button wire:click="verifikasiLansia({{ $pendataan->pendataan_id }}, 'ditolak')" class="text-red-500 hover:text-red-700 text-xs">Tolak</button>
                             @endif
 
                             <button @click="confirmDelete = true" class="text-red-400 hover:text-red-600 text-xs">Hapus</button>

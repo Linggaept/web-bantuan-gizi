@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use Database\Factories\LansiaFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['nik', 'nama', 'tanggal_lahir', 'jenis_kelamin', 'alamat', 'rt', 'rw', 'foto_ktp', 'created_by'])]
 class Lansia extends Model
 {
     /** @use HasFactory<LansiaFactory> */
@@ -17,6 +15,8 @@ class Lansia extends Model
     protected $table = 'lansia';
 
     protected $primaryKey = 'lansia_id';
+
+    protected $fillable = ['nik', 'nama', 'tanggal_lahir', 'jenis_kelamin', 'alamat', 'rt', 'rw', 'foto_ktp', 'created_by'];
 
     protected function casts(): array
     {

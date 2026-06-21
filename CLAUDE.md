@@ -1,3 +1,75 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Application Overview
+
+**Bantuan Gizi** — nutrition assistance management system for elderly (lansia) citizens. Manages health checkups, nutrition aid distribution, and approval workflows.
+
+Three user roles:
+- `operator` — mobile app users (API only, Sanctum tokens)
+- `admin` — web dashboard, full data management
+- `lurah` — village chief, approves/reviews bantuan distribution
+
+## Commands
+
+```bash
+# Full dev stack (server + queue + logs + vite)
+composer run dev
+
+# Tests
+php artisan test --compact
+php artisan test --compact --filter=TestName
+
+# Format PHP after edits
+vendor/bin/pint --dirty --format agent
+
+# Fresh DB with seeders
+php artisan migrate:fresh --seed
+
+# First-time setup
+composer run setup
+```
+
+## Architecture
+
+### Auth & Roles
+
+- Web auth: `AdminAuthController`, session-based, middleware `web.role:{role}`
+- API auth: Sanctum tokens, middleware `role:{role}` (see `RoleMiddleware`)
+- Roles defined as enum on `users` table: `operator`, `admin`, `lurah`
+
+### Two Separate UIs
+
+- `/dashboard/*` — admin web (Livewire, `layouts/admin.blade.php`)
+- `/lurah/*` — lurah web (Livewire, `layouts/lurah.blade.php`)
+- `/api/v1/*` — REST API for mobile operators
+
+### Core Domain Models
+
+```
+Lansia → PemeriksaanKesehatan (health checkups)
+       → Pendataan (verification/data collection by operator)
+       → BantuanGizi (nutrition aid, ranked by RankingService)
+```
+
+`RankingService` (`app/Services/RankingService.php`) — scores lansia for bantuan priority.
+
+### Livewire Components
+
+All interactive UI lives in `app/Livewire/`. Components map to views in `resources/views/livewire/`.
+
+- `Admin/` — full CRUD for lansia, bantuan management, laporan, monitoring
+- `Lurah/` — read-only approval table, laporan
+
+### API Structure
+
+`app/Http/Controllers/Api/V1/` with Eloquent Resources in `app/Http/Resources/`. Routes versioned under `/api/v1/`. API docs via Dedoc Scramble.
+
+### Frontend
+
+Tailwind CSS v4 + Vite. Chart.js for dashboard analytics. Alpine.js available for client-side interactions (no separate JS framework).
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
@@ -10,16 +82,16 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
 - php - 8.3
-- laravel/framework (LARAVEL) - v13
+- laravel/framework (LARAVEL) - v12
 - laravel/prompts (PROMPTS) - v0
 - laravel/sanctum (SANCTUM) - v4
-- livewire/livewire (LIVEWIRE) - v4
+- livewire/livewire (LIVEWIRE) - v3
 - laravel/boost (BOOST) - v2
 - laravel/mcp (MCP) - v0
 - laravel/pail (PAIL) - v1
 - laravel/pint (PINT) - v1
-- pestphp/pest (PEST) - v4
-- phpunit/phpunit (PHPUNIT) - v12
+- pestphp/pest (PEST) - v3
+- phpunit/phpunit (PHPUNIT) - v11
 - tailwindcss (TAILWINDCSS) - v4
 
 ## Skills Activation
@@ -84,7 +156,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Run Artisan commands directly via the command line (e.g., `php artisan route:list`). Use `php artisan list` to discover available commands and `php artisan [command] --help` to check parameters.
 - Inspect routes with `php artisan route:list`. Filter with: `--method=GET`, `--name=users`, `--path=api`, `--except-vendor`, `--only-vendor`.
 - Read configuration values using dot notation: `php artisan config:show app.name`, `php artisan config:show database.default`. Or read config files directly from the `config/` directory.
-- To check environment variables, read the `.env` file directly.
 
 ## Tinker
 
@@ -145,6 +216,31 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 ## Vite Error
 
 - If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
+
+=== laravel/v12 rules ===
+
+# Laravel 12
+
+- CRITICAL: ALWAYS use `search-docs` tool for version-specific Laravel documentation and updated code examples.
+- Since Laravel 11, Laravel has a new streamlined file structure which this project uses.
+
+## Laravel 12 Structure
+
+- In Laravel 12, middleware are no longer registered in `app/Http/Kernel.php`.
+- Middleware are configured declaratively in `bootstrap/app.php` using `Application::configure()->withMiddleware()`.
+- `bootstrap/app.php` is the file to register middleware, exceptions, and routing files.
+- `bootstrap/providers.php` contains application specific service providers.
+- The `app/Console/Kernel.php` file no longer exists; use `bootstrap/app.php` or `routes/console.php` for console configuration.
+- Console commands in `app/Console/Commands/` are automatically available and do not require manual registration.
+
+## Database
+
+- When modifying a column, the migration must include all of the attributes that were previously defined on the column. Otherwise, they will be dropped and lost.
+- Laravel 12 allows limiting eagerly loaded records natively, without external packages: `$query->latest()->limit(10);`.
+
+### Models
+
+- Casts can and likely should be set in a `casts()` method on a model rather than the `$casts` property. Follow existing conventions from other models.
 
 === livewire/core rules ===
 

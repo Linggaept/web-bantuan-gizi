@@ -56,7 +56,9 @@
                             </span>
                         </td>
                         <td class="px-4 py-3">
-                            @if($item->approved_at)
+                            @if($item->status_penerima === 'ditolak')
+                                <span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">Ditolak</span>
+                            @elseif($item->approved_at)
                                 <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700">✓ Approved</span>
                             @else
                                 <span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">Pending</span>

@@ -12,12 +12,20 @@ class LansiaSeeder extends Seeder
     {
         $operators = User::where('role', 'operator')->get();
 
-        $rwList = ['01', '02', '03'];
+        $rwConfig = [
+            '01' => ['kader_rw01', 15],
+            '02' => ['kader_rw02', 18],
+            '03' => ['kader_rw03', 12],
+            '04' => ['kader_rw01', 10],
+            '05' => ['kader_rw02', 14],
+            '06' => ['kader_rw03', 11],
+            '07' => ['kader_rw01', 8],
+        ];
 
-        foreach ($rwList as $rw) {
-            $operator = $operators->firstWhere('username', "kader_rw{$rw}");
+        foreach ($rwConfig as $rw => [$username, $count]) {
+            $operator = $operators->firstWhere('username', $username);
 
-            Lansia::factory(10)->create([
+            Lansia::factory($count)->create([
                 'rw' => $rw,
                 'created_by' => $operator->id,
             ]);

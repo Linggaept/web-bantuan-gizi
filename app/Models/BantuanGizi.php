@@ -3,11 +3,9 @@
 namespace App\Models;
 
 use Database\Factories\BantuanGiziFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['lansia_id', 'periode_bulan', 'periode_tahun', 'skor_ranking', 'status_penerima', 'approved_by', 'approved_at'])]
 class BantuanGizi extends Model
 {
     /** @use HasFactory<BantuanGiziFactory> */
@@ -16,6 +14,8 @@ class BantuanGizi extends Model
     protected $table = 'bantuan_gizi';
 
     protected $primaryKey = 'bantuan_id';
+
+    protected $fillable = ['lansia_id', 'periode_bulan', 'periode_tahun', 'skor_ranking', 'status_penerima', 'approved_by', 'approved_at'];
 
     protected function casts(): array
     {

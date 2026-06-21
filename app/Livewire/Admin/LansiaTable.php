@@ -46,7 +46,7 @@ class LansiaTable extends Component
 
     public function render()
     {
-        $query = Lansia::with(['pemeriksaan' => fn ($q) => $q->latest('tanggal_periksa')->limit(1), 'pendataan' => fn ($q) => $q->latest()]);
+        $query = Lansia::with(['pemeriksaan' => fn ($q) => $q->orderByDesc('tanggal_periksa')->orderByDesc('pemeriksaan_id')->limit(1), 'pendataan' => fn ($q) => $q->latest()]);
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -62,9 +62,7 @@ class LansiaTable extends Component
         if ($this->filterKondisi) {
             $query->whereHas('pemeriksaan', function ($q) {
                 $q->where('hasil_periksa', $this->filterKondisi)
-                    ->whereIn('pemeriksaan_id', function ($sub) {
-                        $sub->selectRaw('MAX(pemeriksaan_id)')->from('pemeriksaan_kesehatan')->groupBy('lansia_id');
-                    });
+                    ->whereRaw('pemeriksaan_id = (SELECT p2.pemeriksaan_id FROM pemeriksaan_kesehatan p2 WHERE p2.lansia_id = pemeriksaan_kesehatan.lansia_id ORDER BY p2.tanggal_periksa DESC, p2.pemeriksaan_id DESC LIMIT 1)');
             });
         }
 

@@ -3,11 +3,9 @@
 namespace App\Models;
 
 use Database\Factories\PemeriksaanKesehatanFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['lansia_id', 'tanggal_periksa', 'berat_badan', 'tekanan_darah', 'hasil_periksa', 'catatan'])]
 class PemeriksaanKesehatan extends Model
 {
     /** @use HasFactory<PemeriksaanKesehatanFactory> */
@@ -16,6 +14,8 @@ class PemeriksaanKesehatan extends Model
     protected $table = 'pemeriksaan_kesehatan';
 
     protected $primaryKey = 'pemeriksaan_id';
+
+    protected $fillable = ['lansia_id', 'tanggal_periksa', 'berat_badan', 'tekanan_darah', 'hasil_periksa', 'catatan'];
 
     protected function casts(): array
     {

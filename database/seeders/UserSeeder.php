@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
 
         // Lurah
         User::create([
-            'name' => 'Lurah Sukamaju',
+            'name' => 'Kelurahan Banjaran',
             'username' => 'lurah',
             'email' => 'lurah@kelurahan.id',
             'password' => Hash::make('password'),

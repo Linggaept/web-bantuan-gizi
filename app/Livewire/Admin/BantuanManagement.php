@@ -26,6 +26,8 @@ class BantuanManagement extends Component
 
     public bool $rankingDone = false;
 
+    public string $search = '';
+
     public function mount(): void
     {
         $this->periodeBulan = now()->month;
@@ -65,11 +67,19 @@ class BantuanManagement extends Component
 
     public function render()
     {
-        $hasilRanking = BantuanGizi::with('lansia')
+        $query = BantuanGizi::with('lansia')
             ->where('periode_bulan', $this->periodeBulan)
             ->where('periode_tahun', $this->periodeTahun)
-            ->orderByDesc('skor_ranking')
-            ->get();
+            ->orderByDesc('skor_ranking');
+
+        if ($this->search) {
+            $query->whereHas('lansia', function ($q) {
+                $q->where('nama', 'like', '%'.$this->search.'%')
+                    ->orWhere('nik', 'like', '%'.$this->search.'%');
+            });
+        }
+
+        $hasilRanking = $query->get();
 
         return view('livewire.admin.bantuan-management', compact('hasilRanking'));
     }
