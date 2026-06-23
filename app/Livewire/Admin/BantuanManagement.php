@@ -3,6 +3,8 @@
 namespace App\Livewire\Admin;
 
 use App\Models\BantuanGizi;
+use App\Models\PemeriksaanKesehatan;
+use App\Services\PeriodeService;
 use App\Services\RankingService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -30,8 +32,9 @@ class BantuanManagement extends Component
 
     public function mount(): void
     {
-        $this->periodeBulan = now()->month;
-        $this->periodeTahun = now()->year;
+        $periode = PeriodeService::current();
+        $this->periodeBulan = $periode['bulan'];
+        $this->periodeTahun = $periode['tahun'];
 
         $existing = cache()->get("bantuan_kuota_{$this->periodeBulan}_{$this->periodeTahun}");
         if ($existing) {
@@ -81,6 +84,21 @@ class BantuanManagement extends Component
 
         $hasilRanking = $query->get();
 
-        return view('livewire.admin.bantuan-management', compact('hasilRanking'));
+        $periodes = PeriodeService::listForYear($this->periodeTahun);
+        $trendLabels = collect($periodes)->pluck('label')->toArray();
+        $trendSehat = collect($periodes)->map(function ($p) {
+            return PemeriksaanKesehatan::where('periode_bulan', $p['bulan'])
+                ->where('periode_tahun', $p['tahun'])
+                ->where('hasil_periksa', 'sehat')
+                ->count();
+        })->toArray();
+        $trendSakit = collect($periodes)->map(function ($p) {
+            return PemeriksaanKesehatan::where('periode_bulan', $p['bulan'])
+                ->where('periode_tahun', $p['tahun'])
+                ->where('hasil_periksa', 'sakit')
+                ->count();
+        })->toArray();
+
+        return view('livewire.admin.bantuan-management', compact('hasilRanking', 'trendLabels', 'trendSehat', 'trendSakit'));
     }
 }

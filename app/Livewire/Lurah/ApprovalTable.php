@@ -29,8 +29,9 @@ class ApprovalTable extends Component
 
     public function mount(): void
     {
-        $this->periodeBulan = now()->month;
-        $this->periodeTahun = now()->year;
+        $periode = \App\Services\PeriodeService::current();
+        $this->periodeBulan = $periode['bulan'];
+        $this->periodeTahun = $periode['tahun'];
     }
 
     public function approve(int $bantuanId): void

@@ -37,8 +37,6 @@
                         <th class="text-left px-4 py-3 text-gray-600">RW</th>
                         <th class="text-left px-4 py-3 text-gray-600">Periode</th>
                         <th class="text-left px-4 py-3 text-gray-600">Status</th>
-                        <th class="text-left px-4 py-3 text-gray-600">Approval</th>
-                        <th class="text-left px-4 py-3 text-gray-600">Skor</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,26 +47,16 @@
                         <td class="px-4 py-3 font-medium">{{ $item->lansia?->nama }}</td>
                         <td class="px-4 py-3">{{ $item->lansia?->usia }}</td>
                         <td class="px-4 py-3">{{ $item->lansia?->rw }}</td>
-                        <td class="px-4 py-3">{{ $item->periode_bulan }}/{{ $item->periode_tahun }}</td>
+                        <td class="px-4 py-3">{{ \App\Services\PeriodeService::label($item->periode_bulan, $item->periode_tahun) }}</td>
                         <td class="px-4 py-3">
                             <span class="px-2 py-1 rounded-full text-xs {{ $item->status_penerima === 'penerima' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
                                 {{ $item->status_penerima === 'penerima' ? 'Penerima' : 'Tidak Penerima' }}
                             </span>
                         </td>
-                        <td class="px-4 py-3">
-                            @if($item->status_penerima === 'ditolak')
-                                <span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">Ditolak</span>
-                            @elseif($item->approved_at)
-                                <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700">✓ Approved</span>
-                            @else
-                                <span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700">Pending</span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3 font-mono text-xs text-blue-600">{{ $item->skor_ranking ? number_format($item->skor_ranking, 4) : '-' }}</td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="px-4 py-8 text-center text-gray-400 text-sm">Tidak ada data laporan.</td>
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-400 text-sm">Tidak ada data laporan.</td>
                     </tr>
                     @endforelse
                 </tbody>

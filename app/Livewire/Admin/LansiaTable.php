@@ -60,9 +60,18 @@ class LansiaTable extends Component
         }
 
         if ($this->filterKondisi) {
-            $query->whereHas('pemeriksaan', function ($q) {
-                $q->where('hasil_periksa', $this->filterKondisi)
-                    ->whereRaw('pemeriksaan_id = (SELECT p2.pemeriksaan_id FROM pemeriksaan_kesehatan p2 WHERE p2.lansia_id = pemeriksaan_kesehatan.lansia_id ORDER BY p2.tanggal_periksa DESC, p2.pemeriksaan_id DESC LIMIT 1)');
+            $kondisi = $this->filterKondisi;
+            $query->where(function ($q) use ($kondisi) {
+                // Has pemeriksaan: latest pemeriksaan.hasil_periksa must match
+                $q->whereHas('pemeriksaan', function ($sub) use ($kondisi) {
+                    $sub->where('hasil_periksa', $kondisi)
+                        ->whereRaw('pemeriksaan_id = (SELECT p2.pemeriksaan_id FROM pemeriksaan_kesehatan p2 WHERE p2.lansia_id = pemeriksaan_kesehatan.lansia_id ORDER BY p2.tanggal_periksa DESC, p2.pemeriksaan_id DESC LIMIT 1)');
+                })
+                // OR no pemeriksaan at all AND lansia.kondisi_kesehatan matches
+                ->orWhere(function ($sub) use ($kondisi) {
+                    $sub->whereDoesntHave('pemeriksaan')
+                        ->where('kondisi_kesehatan', $kondisi);
+                });
             });
         }
 

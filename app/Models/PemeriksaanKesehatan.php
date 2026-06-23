@@ -15,7 +15,7 @@ class PemeriksaanKesehatan extends Model
 
     protected $primaryKey = 'pemeriksaan_id';
 
-    protected $fillable = ['lansia_id', 'tanggal_periksa', 'berat_badan', 'tekanan_darah', 'hasil_periksa', 'catatan'];
+    protected $fillable = ['lansia_id', 'tanggal_periksa', 'berat_badan', 'tekanan_darah', 'hasil_periksa', 'catatan', 'periode_bulan', 'periode_tahun'];
 
     protected function casts(): array
     {

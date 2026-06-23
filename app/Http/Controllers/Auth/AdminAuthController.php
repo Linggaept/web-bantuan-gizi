@@ -58,6 +58,14 @@ class AdminAuthController extends Controller
             $query->where('status_penerima', $request->jenis);
         }
 
+        if ($request->filled('periode')) {
+            $query->where('periode_bulan', (int) $request->periode);
+        }
+
+        if ($request->filled('tahun')) {
+            $query->where('periode_tahun', (int) $request->tahun);
+        }
+
         $data = $query->get();
 
         return view('livewire.admin.laporan-print', compact('data'));

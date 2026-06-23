@@ -25,12 +25,15 @@ class LansiaController extends Controller
         }
 
         if ($request->filled('kondisi_kesehatan')) {
-            $query->whereHas('pemeriksaan', function ($q) use ($request) {
-                $q->where('hasil_periksa', $request->kondisi_kesehatan)
-                    ->whereIn('pemeriksaan_id', function ($sub) {
-                        $sub->selectRaw('MAX(pemeriksaan_id)')
-                            ->from('pemeriksaan_kesehatan')
-                            ->groupBy('lansia_id');
+            $query->where(function ($q) use ($request) {
+                $q->where('kondisi_kesehatan', $request->kondisi_kesehatan)
+                    ->orWhereHas('pemeriksaan', function ($q2) use ($request) {
+                        $q2->where('hasil_periksa', $request->kondisi_kesehatan)
+                            ->whereIn('pemeriksaan_id', function ($sub) {
+                                $sub->selectRaw('MAX(pemeriksaan_id)')
+                                    ->from('pemeriksaan_kesehatan')
+                                    ->groupBy('lansia_id');
+                            });
                     });
             });
         }
@@ -54,6 +57,8 @@ class LansiaController extends Controller
             'alamat' => ['required', 'string'],
             'rt' => ['nullable', 'string', 'max:5'],
             'rw' => ['required', 'string', 'max:5'],
+            'tinggi_badan' => ['nullable', 'numeric', 'min:50', 'max:250'],
+            'kondisi_kesehatan' => ['nullable', 'in:sehat,sakit'],
         ]);
 
         $validated['created_by'] = $request->user()->id;
@@ -90,6 +95,8 @@ class LansiaController extends Controller
             'alamat' => ['sometimes', 'string'],
             'rt' => ['nullable', 'string', 'max:5'],
             'rw' => ['sometimes', 'string', 'max:5'],
+            'tinggi_badan' => ['sometimes', 'nullable', 'numeric', 'min:50', 'max:250'],
+            'kondisi_kesehatan' => ['sometimes', 'nullable', 'in:sehat,sakit'],
         ]);
 
         $model->update($validated);

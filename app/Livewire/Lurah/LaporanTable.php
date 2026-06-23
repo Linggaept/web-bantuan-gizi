@@ -29,7 +29,7 @@ class LaporanTable extends Component
 
         return response()->streamDownload(function () use ($data) {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['No', 'NIK', 'Nama', 'Usia', 'RW', 'Periode', 'Status', 'Approval', 'Skor']);
+            fputcsv($handle, ['No', 'NIK', 'Nama', 'Usia', 'RW', 'Periode', 'Status']);
             $no = 1;
             foreach ($data as $item) {
                 fputcsv($handle, [
@@ -38,10 +38,8 @@ class LaporanTable extends Component
                     $item->lansia?->nama,
                     $item->lansia?->usia,
                     $item->lansia?->rw,
-                    "{$item->periode_bulan}/{$item->periode_tahun}",
+                    \App\Services\PeriodeService::label($item->periode_bulan, $item->periode_tahun),
                     $item->status_penerima,
-                    $item->approved_at ? 'Approved' : 'Pending',
-                    $item->skor_ranking,
                 ]);
             }
             fclose($handle);

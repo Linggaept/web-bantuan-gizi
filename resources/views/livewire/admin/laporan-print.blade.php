@@ -34,7 +34,6 @@
                 <th>RW</th>
                 <th>Periode</th>
                 <th>Status</th>
-                <th>Skor Ranking</th>
             </tr>
         </thead>
         <tbody>
@@ -45,16 +44,15 @@
                 <td>{{ $item->lansia?->nama }}</td>
                 <td>{{ $item->lansia?->usia }}</td>
                 <td>{{ $item->lansia?->rw }}</td>
-                <td>{{ $item->periode_bulan }}/{{ $item->periode_tahun }}</td>
+                <td>{{ \App\Services\PeriodeService::label($item->periode_bulan, $item->periode_tahun) }}</td>
                 <td>{{ $item->status_penerima }}</td>
-                <td>{{ $item->skor_ranking ? number_format($item->skor_ranking, 4) : '-' }}</td>
             </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="6">Total</td>
-                <td colspan="2">{{ $data->count() }} data</td>
+                <td>{{ $data->count() }} data</td>
             </tr>
         </tfoot>
     </table>

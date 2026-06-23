@@ -21,6 +21,8 @@ class LansiaFactory extends Factory
             'alamat' => fake()->address(),
             'rt' => fake()->numerify('0#'),
             'rw' => fake()->numerify('0#'),
+            'tinggi_badan' => fake()->randomFloat(2, 150, 175),
+            'kondisi_kesehatan' => fake()->randomElement(['sehat', 'sakit']),
             'foto_ktp' => null,
             'created_by' => User::factory(),
         ];

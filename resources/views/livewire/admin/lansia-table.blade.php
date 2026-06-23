@@ -16,9 +16,8 @@
             </select>
             <select wire:model.live="filterKondisi" class="border border-gray-300 rounded px-3 py-2 text-sm w-full sm:w-auto focus:outline-none">
                 <option value="">Semua Kondisi</option>
-                <option value="baik">Sehat</option>
-                <option value="sedang">Sakit Ringan</option>
-                <option value="buruk">Sakit</option>
+                <option value="sehat">Sehat</option>
+                <option value="sakit">Sakit</option>
             </select>
             <select wire:model.live="filterStatus" class="border border-gray-300 rounded px-3 py-2 text-sm w-full sm:w-auto focus:outline-none">
                 <option value="">Semua Status</option>
@@ -47,7 +46,7 @@
             <tbody>
                 @forelse($lansiaList as $lansia)
                 @php
-                    $kondisi = $lansia->pemeriksaan->first()?->hasil_periksa ?? null;
+                    $kondisi = $lansia->pemeriksaan->first()?->hasil_periksa ?? $lansia->kondisi_kesehatan ?? null;
                     $pendataan = $lansia->pendataan->first();
                     $statusVerif = $pendataan?->status_verifikasi ?? 'belum_ada';
                 @endphp
@@ -58,8 +57,8 @@
                     <td class="px-4 py-3 text-gray-600">{{ $lansia->rw }}</td>
                     <td class="px-4 py-3">
                         @if($kondisi)
-                        <span class="px-2 py-1 rounded-full text-xs {{ $kondisi === 'baik' ? 'bg-green-100 text-green-700' : ($kondisi === 'sedang' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700') }}">
-                            {{ $kondisi === 'baik' ? 'Sehat' : ($kondisi === 'sedang' ? 'Sakit Ringan' : 'Sakit') }}
+                        <span class="px-2 py-1 rounded-full text-xs {{ $kondisi === 'sehat' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                            {{ ucfirst($kondisi) }}
                         </span>
                         @else
                         <span class="text-gray-400 text-xs">Belum periksa</span>

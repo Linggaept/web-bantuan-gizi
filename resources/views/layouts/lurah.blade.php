@@ -24,10 +24,6 @@
                    class="px-4 py-2 text-sm rounded {{ request()->routeIs('lurah.dashboard') ? 'bg-green-50 text-green-600 font-medium' : 'text-gray-600 hover:text-gray-800' }}">
                     Dashboard
                 </a>
-                <a href="{{ route('lurah.approval') }}"
-                   class="px-4 py-2 text-sm rounded {{ request()->routeIs('lurah.approval') ? 'bg-green-50 text-green-600 font-medium' : 'text-gray-600 hover:text-gray-800' }}">
-                    Approval Bantuan
-                </a>
                 <a href="{{ route('lurah.laporan') }}"
                    class="px-4 py-2 text-sm rounded {{ request()->routeIs('lurah.laporan*') ? 'bg-green-50 text-green-600 font-medium' : 'text-gray-600 hover:text-gray-800' }}">
                     Laporan
@@ -64,10 +60,6 @@
                 <a href="{{ route('lurah.dashboard') }}"
                    class="px-4 py-2 text-sm rounded {{ request()->routeIs('lurah.dashboard') ? 'bg-green-50 text-green-600 font-medium' : 'text-gray-600 hover:text-gray-800' }}">
                     Dashboard
-                </a>
-                <a href="{{ route('lurah.approval') }}"
-                   class="px-4 py-2 text-sm rounded {{ request()->routeIs('lurah.approval') ? 'bg-green-50 text-green-600 font-medium' : 'text-gray-600 hover:text-gray-800' }}">
-                    Approval Bantuan
                 </a>
                 <a href="{{ route('lurah.laporan') }}"
                    class="px-4 py-2 text-sm rounded {{ request()->routeIs('lurah.laporan*') ? 'bg-green-50 text-green-600 font-medium' : 'text-gray-600 hover:text-gray-800' }}">

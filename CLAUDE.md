@@ -53,7 +53,17 @@ Lansia → PemeriksaanKesehatan (health checkups)
        → BantuanGizi (nutrition aid, ranked by RankingService)
 ```
 
-`RankingService` (`app/Services/RankingService.php`) — scores lansia for bantuan priority.
+- `BantuanGizi.status_penerima` values: `penerima`, `tidak_penerima`, `disetujui`, `ditolak` (lurah approval flow).
+- `Pendataan.status_verifikasi`: `terverifikasi` required for ranking eligibility.
+- **Auto-Pendataan**: `Api/V1/LansiaController` auto-creates a `Pendataan` row when a new Lansia is registered via the mobile API. Web admin creation does not trigger this.
+
+### RankingService
+
+`app/Services/RankingService.php` — scores lansia per `(periode_bulan, periode_tahun)`, writes `BantuanGizi` rows with `status_penerima` based on `kuota`.
+
+- Formula: `(usia / 100 * 0.6) + (healthScore / 10 * 0.4)`
+- Health score map: `buruk=10`, `sedang=6`, `baik=3` (default `sedang` if no latest `PemeriksaanKesehatan`).
+- Only Lansia with `Pendataan.status_verifikasi = 'terverifikasi'` are considered.
 
 ### Livewire Components
 
@@ -64,11 +74,23 @@ All interactive UI lives in `app/Livewire/`. Components map to views in `resourc
 
 ### API Structure
 
-`app/Http/Controllers/Api/V1/` with Eloquent Resources in `app/Http/Resources/`. Routes versioned under `/api/v1/`. API docs via Dedoc Scramble.
+`app/Http/Controllers/Api/V1/` with Eloquent Resources in `app/Http/Resources/`. Routes versioned under `/api/v1/`. API docs via Dedoc Scramble. Mobile operator API reference: `docs/api/mobile-operator-api.md`.
 
 ### Frontend
 
 Tailwind CSS v4 + Vite. Chart.js for dashboard analytics. Alpine.js available for client-side interactions (no separate JS framework).
+
+### Tests
+
+- Pest 3, feature tests in `tests/Feature/`, unit in `tests/Unit/`. Shared bootstrap in `tests/Pest.php` and `tests/TestCase.php`.
+
+### Seeded Users (local dev)
+
+`DatabaseSeeder` → `UserSeeder` creates default accounts, all with password `password`:
+
+- `admin` — admin role
+- `lurah` — lurah role
+- `kader_rw01` / `kader_rw02` / `kader_rw03` — operator role
 
 <laravel-boost-guidelines>
 === foundation rules ===

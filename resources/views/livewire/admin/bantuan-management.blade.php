@@ -8,9 +8,10 @@
                     <label class="block text-sm text-gray-600 mb-1">Periode</label>
                     <div class="flex gap-2">
                         <select wire:model="periodeBulan" class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm">
-                            @foreach(range(1,12) as $m)
-                                <option value="{{ $m }}">{{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}</option>
-                            @endforeach
+                            <option value="1">Q1 (Jan–Mar)</option>
+                            <option value="4">Q2 (Apr–Jun)</option>
+                            <option value="7">Q3 (Jul–Sep)</option>
+                            <option value="10">Q4 (Okt–Des)</option>
                         </select>
                         <input wire:model="periodeTahun" type="number" min="2020" class="w-24 border border-gray-300 rounded px-3 py-2 text-sm">
                     </div>
@@ -44,6 +45,47 @@
         </div>
     </div>
 
+    {{-- Trend Kesehatan per Periode --}}
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6" wire:ignore>
+        <h3 class="font-medium text-gray-800 mb-4">Trend Kesehatan Lansia per Periode</h3>
+        <div
+            x-data="{}"
+            x-init="
+                new Chart($refs.trendCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: {{ json_encode($trendLabels) }},
+                        datasets: [
+                            {
+                                label: 'Sehat',
+                                data: {{ json_encode($trendSehat) }},
+                                borderColor: '#16a34a',
+                                backgroundColor: 'rgba(22,163,74,0.1)',
+                                tension: 0.3,
+                                fill: true,
+                            },
+                            {
+                                label: 'Sakit',
+                                data: {{ json_encode($trendSakit) }},
+                                borderColor: '#ef4444',
+                                backgroundColor: 'rgba(239,68,68,0.1)',
+                                tension: 0.3,
+                                fill: true,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'top' } },
+                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                    }
+                })
+            "
+        >
+            <canvas x-ref="trendCanvas" height="120"></canvas>
+        </div>
+    </div>
+
     {{-- Hasil Ranking --}}
     @if($hasilRanking->count() > 0 || $search)
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -59,7 +101,6 @@
                     <th class="text-left px-4 py-3 text-gray-600">Nama</th>
                     <th class="text-left px-4 py-3 text-gray-600">Usia</th>
                     <th class="text-left px-4 py-3 text-gray-600">RW</th>
-                    <th class="text-left px-4 py-3 text-gray-600">Skor</th>
                     <th class="text-left px-4 py-3 text-gray-600">Status</th>
                 </tr>
             </thead>
@@ -70,7 +111,6 @@
                     <td class="px-4 py-3 font-medium">{{ $bantuan->lansia?->nama }}</td>
                     <td class="px-4 py-3">{{ $bantuan->lansia?->usia }}</td>
                     <td class="px-4 py-3">{{ $bantuan->lansia?->rw }}</td>
-                    <td class="px-4 py-3 text-blue-600 font-mono">{{ number_format($bantuan->skor_ranking, 4) }}</td>
                     <td class="px-4 py-3">
                         <span class="px-2 py-1 rounded-full text-xs {{ $bantuan->status_penerima === 'penerima' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
                             {{ $bantuan->status_penerima === 'penerima' ? 'Penerima' : 'Tidak Penerima' }}
@@ -79,7 +119,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-sm">Tidak ada hasil cocok.</td>
+                    <td colspan="5" class="px-4 py-8 text-center text-gray-400 text-sm">Tidak ada hasil cocok.</td>
                 </tr>
                 @endforelse
             </tbody>

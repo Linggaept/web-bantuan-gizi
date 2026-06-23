@@ -22,6 +22,10 @@ class LaporanTable extends Component
 
     public string $filterKondisi = '';
 
+    public string $filterPeriode = '';
+
+    public string $filterTahun = '';
+
     public int $filterLimit = 15;
 
     public function download(): StreamedResponse
@@ -33,7 +37,7 @@ class LaporanTable extends Component
 
         return response()->streamDownload(function () use ($data) {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['No', 'NIK', 'Nama', 'Usia', 'RW', 'Periode', 'Status', 'Skor']);
+            fputcsv($handle, ['No', 'NIK', 'Nama', 'Usia', 'RW', 'Periode', 'Status']);
             $no = 1;
             foreach ($data as $item) {
                 fputcsv($handle, [
@@ -42,9 +46,8 @@ class LaporanTable extends Component
                     $item->lansia?->nama,
                     $item->lansia?->usia,
                     $item->lansia?->rw,
-                    "{$item->periode_bulan}/{$item->periode_tahun}",
+                    \App\Services\PeriodeService::label($item->periode_bulan, $item->periode_tahun),
                     $item->status_penerima,
-                    $item->skor_ranking,
                 ]);
             }
             fclose($handle);
@@ -61,6 +64,14 @@ class LaporanTable extends Component
 
         if ($this->filterJenis && $this->filterJenis !== 'semua') {
             $query->where('status_penerima', $this->filterJenis);
+        }
+
+        if ($this->filterPeriode !== '') {
+            $query->where('periode_bulan', (int) $this->filterPeriode);
+        }
+
+        if ($this->filterTahun !== '') {
+            $query->where('periode_tahun', (int) $this->filterTahun);
         }
 
         return $query;

@@ -13,9 +13,8 @@ class RankingService
      * @var array<string, int>
      */
     private array $healthScoreMap = [
-        'buruk' => 10,
-        'sedang' => 6,
-        'baik' => 3,
+        'sakit' => 10,
+        'sehat' => 3,
     ];
 
     /**
@@ -34,8 +33,8 @@ class RankingService
                     ->orderByDesc('pemeriksaan_id')
                     ->first();
 
-                $hasilPeriksa = $latestPeriksa?->hasil_periksa ?? 'sedang';
-                $healthScore = $this->healthScoreMap[$hasilPeriksa] ?? 6;
+                $hasilPeriksa = $latestPeriksa?->hasil_periksa ?? 'sehat';
+                $healthScore = $this->healthScoreMap[$hasilPeriksa] ?? 3;
 
                 $usia = $lansia->usia;
                 $skor = ($usia / 100 * 0.6) + ($healthScore / 10 * 0.4);
@@ -53,6 +52,8 @@ class RankingService
         $penerima = $ranked->take($kuota)->pluck('lansia_id');
 
         foreach ($ranked as $item) {
+            $isPenerima = $penerima->contains($item['lansia_id']);
+
             BantuanGizi::updateOrCreate(
                 [
                     'lansia_id' => $item['lansia_id'],
@@ -61,7 +62,9 @@ class RankingService
                 ],
                 [
                     'skor_ranking' => $item['skor_ranking'],
-                    'status_penerima' => $penerima->contains($item['lansia_id']) ? 'penerima' : 'tidak_penerima',
+                    'status_penerima' => $isPenerima ? 'penerima' : 'tidak_penerima',
+                    'approved_at' => $isPenerima ? now() : null,
+                    'approved_by' => $isPenerima ? auth()->id() : null,
                 ]
             );
         }

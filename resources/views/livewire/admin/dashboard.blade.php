@@ -14,17 +14,17 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-sm p-4 flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-500">RW {{ $rwTerbanyak?->rw ?? '-' }}</p>
-                <p class="text-3xl font-bold text-gray-800">{{ $rwTerbanyak?->total ?? 0 }}</p>
-                <p class="text-xs text-gray-400">Lansia</p>
-            </div>
-            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                </svg>
-            </div>
-        </div>
+    <div>
+        <p class="text-sm text-gray-500">Periode Aktif</p>
+        <p class="text-xl font-bold text-gray-800">{{ \App\Services\PeriodeService::label(\App\Services\PeriodeService::current()['bulan'], \App\Services\PeriodeService::current()['tahun']) }}</p>
+        <p class="text-xs text-gray-400">3 bulan sekali</p>
+    </div>
+    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+    </div>
+</div>
 
         <div class="bg-white rounded-lg shadow-sm p-4 flex items-center justify-between">
             <div>
@@ -50,18 +50,18 @@
     {{-- Chart + Table Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {{-- Bar Chart --}}
-        <div class="col-span-1 lg:col-span-3 bg-white rounded-lg shadow-sm p-4">
-            <h3 class="text-sm font-medium text-gray-700 mb-4">Distribusi Usia Lansia</h3>
+        <div class="col-span-1 lg:col-span-3 bg-white rounded-lg shadow-sm p-4" wire:ignore>
+            <h3 class="text-sm font-medium text-gray-700 mb-4">Pemeriksaan per Periode</h3>
             <div
                 x-data="{}"
                 x-init="
                     new Chart($refs.canvas, {
                         type: 'bar',
                         data: {
-                            labels: {{ json_encode($chartLabels) }},
+                            labels: {{ json_encode($periodeLabels) }},
                             datasets: [{
-                                label: 'Jumlah Lansia',
-                                data: {{ json_encode($chartData) }},
+                                label: 'Jumlah Pemeriksaan',
+                                data: {{ json_encode($periodeData) }},
                                 backgroundColor: '#3b82f6',
                                 borderRadius: 4,
                             }]
@@ -99,7 +99,7 @@
                         <td class="py-2">{{ $l->usia }}</td>
                         <td class="py-2">
                             @php $kondisi = $l->pemeriksaan->first()?->hasil_periksa ?? '-' @endphp
-                            <span class="px-2 py-0.5 rounded text-xs {{ $kondisi === 'baik' ? 'bg-green-100 text-green-700' : ($kondisi === 'sedang' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700') }}">
+                            <span class="px-2 py-0.5 rounded text-xs {{ $kondisi === 'sehat' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                                 {{ ucfirst($kondisi) }}
                             </span>
                         </td>

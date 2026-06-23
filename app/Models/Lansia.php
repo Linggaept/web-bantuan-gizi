@@ -16,7 +16,7 @@ class Lansia extends Model
 
     protected $primaryKey = 'lansia_id';
 
-    protected $fillable = ['nik', 'nama', 'tanggal_lahir', 'jenis_kelamin', 'alamat', 'rt', 'rw', 'foto_ktp', 'created_by'];
+    protected $fillable = ['nik', 'nama', 'tanggal_lahir', 'jenis_kelamin', 'alamat', 'rt', 'rw', 'tinggi_badan', 'kondisi_kesehatan', 'foto_ktp', 'created_by'];
 
     protected function casts(): array
     {

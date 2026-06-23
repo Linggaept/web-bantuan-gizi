@@ -10,11 +10,26 @@ class PemeriksaanKesehatanSeeder extends Seeder
 {
     public function run(): void
     {
-        Lansia::all()->each(function (Lansia $lansia) {
-            // 1-3 riwayat pemeriksaan per lansia
-            PemeriksaanKesehatan::factory(rand(1, 3))->create([
-                'lansia_id' => $lansia->lansia_id,
-            ]);
+        $periodes = [[1, 2026], [4, 2026], [7, 2025], [10, 2025]];
+
+        Lansia::all()->each(function (Lansia $lansia) use ($periodes) {
+            // seed up to 4 quarterly periods per lansia
+            $selectedPeriodes = collect($periodes)->shuffle()->take(rand(1, 4));
+
+            foreach ($selectedPeriodes as [$bulan, $tahun]) {
+                $exists = PemeriksaanKesehatan::where('lansia_id', $lansia->lansia_id)
+                    ->where('periode_bulan', $bulan)
+                    ->where('periode_tahun', $tahun)
+                    ->exists();
+
+                if (! $exists) {
+                    PemeriksaanKesehatan::factory()->create([
+                        'lansia_id' => $lansia->lansia_id,
+                        'periode_bulan' => $bulan,
+                        'periode_tahun' => $tahun,
+                    ]);
+                }
+            }
         });
     }
 }

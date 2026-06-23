@@ -13,9 +13,10 @@
 
             <div class="flex flex-wrap items-center gap-2">
                 <select wire:model.live="periodeBulan" class="border border-gray-300 rounded px-3 py-2 text-sm">
-                    @foreach(range(1,12) as $m)
-                        <option value="{{ $m }}">{{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}</option>
-                    @endforeach
+                    <option value="1">Q1 (Jan–Mar)</option>
+                    <option value="4">Q2 (Apr–Jun)</option>
+                    <option value="7">Q3 (Jul–Sep)</option>
+                    <option value="10">Q4 (Okt–Des)</option>
                 </select>
                 <input wire:model.live="periodeTahun" type="number" min="2020" class="w-24 border border-gray-300 rounded px-3 py-2 text-sm">
 

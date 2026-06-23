@@ -16,6 +16,8 @@ class PemeriksaanResource extends JsonResource
             'berat_badan' => $this->berat_badan,
             'tekanan_darah' => $this->tekanan_darah,
             'hasil_periksa' => $this->hasil_periksa,
+            'periode_bulan' => $this->periode_bulan,
+            'periode_tahun' => $this->periode_tahun,
             'catatan' => $this->catatan,
             'created_at' => $this->created_at?->toIso8601String(),
         ];

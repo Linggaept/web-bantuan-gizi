@@ -23,6 +23,7 @@ Route::prefix('v1')->group(function () {
                 'parameters' => ['lansia' => 'lansia'],
             ]);
             Route::post('lansia/{lansia}/foto-ktp', [LansiaController::class, 'uploadFotoKtp']);
+            Route::get('lansia/{lansia}/monitoring', [PemeriksaanController::class, 'monitoring']);
             Route::apiResource('lansia.pemeriksaan', PemeriksaanController::class)->shallow();
         });
 

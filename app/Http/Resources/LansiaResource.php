@@ -19,6 +19,8 @@ class LansiaResource extends JsonResource
             'alamat' => $this->alamat,
             'rt' => $this->rt,
             'rw' => $this->rw,
+            'tinggi_badan' => $this->tinggi_badan,
+            'kondisi_kesehatan' => $this->kondisi_kesehatan,
             'foto_ktp' => $this->foto_ktp ? asset('storage/'.$this->foto_ktp) : null,
             'created_by' => $this->created_by,
             'created_at' => $this->created_at?->toIso8601String(),
