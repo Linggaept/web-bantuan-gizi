@@ -22,7 +22,7 @@
     </div>
 
     <h1>Laporan Penyaluran Bantuan Gizi Lansia</h1>
-    <p class="subtitle">Dicetak pada: {{ now()->translatedFormat('d F Y H:i') }}</p>
+    <p class="subtitle">Dicetak pada: {{ now()->translatedFormat('d F Y H:i') }} WIB</p>
 
     <table>
         <thead>

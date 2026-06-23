@@ -48,11 +48,14 @@ composer run setup
 ### Core Domain Models
 
 ```
-Lansia → PemeriksaanKesehatan (health checkups)
+Lansia → PemeriksaanKesehatan (health checkups, per periode_bulan/periode_tahun)
        → Pendataan (verification/data collection by operator)
        → BantuanGizi (nutrition aid, ranked by RankingService)
 ```
 
+- All models use non-standard PKs: `lansia_id`, `pemeriksaan_id`, `pendataan_id`, `bantuan_id`. Relationships always specify FK and owner key explicitly.
+- `Lansia.usia` — computed accessor from `tanggal_lahir` (`->age`), not a DB column.
+- `Lansia.kondisi_kesehatan` — denormalized field; actual per-checkup classification lives in `PemeriksaanKesehatan.hasil_periksa`.
 - `BantuanGizi.status_penerima` values: `penerima`, `tidak_penerima`, `disetujui`, `ditolak` (lurah approval flow).
 - `Pendataan.status_verifikasi`: `terverifikasi` required for ranking eligibility.
 - **Auto-Pendataan**: `Api/V1/LansiaController` auto-creates a `Pendataan` row when a new Lansia is registered via the mobile API. Web admin creation does not trigger this.
@@ -62,15 +65,38 @@ Lansia → PemeriksaanKesehatan (health checkups)
 `app/Services/RankingService.php` — scores lansia per `(periode_bulan, periode_tahun)`, writes `BantuanGizi` rows with `status_penerima` based on `kuota`.
 
 - Formula: `(usia / 100 * 0.6) + (healthScore / 10 * 0.4)`
-- Health score map: `buruk=10`, `sedang=6`, `baik=3` (default `sedang` if no latest `PemeriksaanKesehatan`).
+- Health score map: `sakit=10`, `sehat=3` (default `sehat` if no latest `PemeriksaanKesehatan`).
+- Higher score = higher priority (older age + worse health → more urgent need).
 - Only Lansia with `Pendataan.status_verifikasi = 'terverifikasi'` are considered.
+
+### PeriodeService
+
+`app/Services/PeriodeService.php` — quarterly period logic. Quarters: Q1=Jan(1), Q2=Apr(4), Q3=Jul(7), Q4=Oct(10).
+
+- `PeriodeService::current()` → `{bulan, tahun}` for today's quarter.
+- `PeriodeService::label($bulan, $tahun)` → human label e.g. `"Q2 2026 (Apr–Jun)"`.
+- `PeriodeService::previous($bulan, $tahun)` → prior quarter with year rollover.
+
+### HealthClassifier
+
+`app/Services/HealthClassifier.php` — classifies `hasil_periksa` as `sehat` or `sakit`.
+
+- `sehat` = BMI 18.5–24.9 AND systolic 90–139 AND diastolic 60–89.
+- Missing/null data → not penalized (defaults to normal for that dimension).
+- Input: `tekanan_darah` expects `"120/80"` format.
 
 ### Livewire Components
 
 All interactive UI lives in `app/Livewire/`. Components map to views in `resources/views/livewire/`.
 
-- `Admin/` — full CRUD for lansia, bantuan management, laporan, monitoring
-- `Lurah/` — read-only approval table, laporan
+- `Admin/Dashboard` — analytics/stats
+- `Admin/LansiaTable` + `Admin/LansiaForm` — CRUD for lansia
+- `Admin/BantuanManagement` — run ranking, set kuota, manage distribution
+- `Admin/LaporanTable` — report generation/print
+- `Admin/MonitoringTable` — operator input monitoring
+- `Lurah/Dashboard` — read-only stats
+- `Lurah/ApprovalTable` — approve/reject `penerima` bantuan
+- `Lurah/LaporanTable` — read-only laporan
 
 ### API Structure
 
