@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\BantuanGizi;
 use App\Models\User;
+use App\Services\PeriodeService;
 use App\Services\RankingService;
 use Illuminate\Database\Seeder;
 
@@ -17,8 +18,9 @@ class BantuanGiziSeeder extends Seeder
 
         // Set kuota 20 penerima
         $kuota = 20;
-        $periodeBulan = now()->month;
-        $periodeTahun = now()->year;
+        $periode = PeriodeService::current();
+        $periodeBulan = $periode['bulan'];
+        $periodeTahun = $periode['tahun'];
 
         // Run ranking
         $this->rankingService->rank($periodeBulan, $periodeTahun, $kuota);

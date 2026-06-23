@@ -56,7 +56,7 @@ class PeriodeService
     /**
      * Human-readable label, e.g. "Q1 2026 (Jan–Mar)"
      */
-    public static function label(int $bulan, int $tahun): string
+    public static function label(?int $bulan, ?int $tahun): string
     {
         $quarters = [
             1 => ['Q1', 'Jan–Mar'],
@@ -65,7 +65,18 @@ class PeriodeService
             10 => ['Q4', 'Okt–Des'],
         ];
 
+        if ($bulan !== null && ! isset($quarters[$bulan])) {
+            $bulan = match (true) {
+                $bulan >= 10 => 10,
+                $bulan >= 7 => 7,
+                $bulan >= 4 => 4,
+                $bulan >= 1 => 1,
+                default => null,
+            };
+        }
+
         [$q, $range] = $quarters[$bulan] ?? ['Q?', '?'];
+        $tahun = $tahun ?? '?';
 
         return "{$q} {$tahun} ({$range})";
     }
