@@ -132,11 +132,20 @@ test('operator can view status bantuan lansia', function () {
     $lansia = Lansia::factory()->create(['created_by' => $this->operator->id]);
     BantuanGizi::factory()->create([
         'lansia_id' => $lansia->lansia_id,
+        'periode_bulan' => 4,
+        'periode_tahun' => 2026,
         'status_penerima' => 'penerima',
+    ]);
+    BantuanGizi::factory()->create([
+        'lansia_id' => $lansia->lansia_id,
+        'periode_bulan' => 1,
+        'periode_tahun' => 2026,
+        'status_penerima' => 'tidak_penerima',
     ]);
 
     $this->actingAs($this->operator)
         ->getJson("/api/v1/lansia/{$lansia->lansia_id}/status-bantuan")
         ->assertOk()
-        ->assertJsonPath('data.status_penerima', 'penerima');
+        ->assertJsonCount(2, 'data')
+        ->assertJsonPath('data.0.status_penerima', 'penerima');
 });

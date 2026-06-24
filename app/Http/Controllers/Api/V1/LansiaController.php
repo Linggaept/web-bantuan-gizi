@@ -130,12 +130,10 @@ class LansiaController extends Controller
         $bantuan = $model->bantuanGizi()
             ->orderByDesc('periode_tahun')
             ->orderByDesc('periode_bulan')
-            ->first();
+            ->get();
 
-        if (! $bantuan) {
-            return response()->json(['data' => ['status_penerima' => null, 'lansia_id' => $lansia]]);
-        }
-
-        return (new BantuanResource($bantuan))->response();
+        return response()->json([
+            'data' => BantuanResource::collection($bantuan),
+        ]);
     }
 }
